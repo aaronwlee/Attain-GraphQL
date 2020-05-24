@@ -83,3 +83,38 @@ await app.listen({ port: 8080 });
 - [ ] Add cache
 - [ ] Enable the upload
 - [ ] Enable the JSON scalar
+
+## Method
+### gql 
+> [GraphQL-tag](https://github.com/apollographql/graphql-tag)
+Parsing GraphQL queries
+- `gql` A JavaScript template literal tag that parses GraphQL query strings into the standard GraphQL AST.
+
+### applyGraphQL
+A Generator which based Attain Router class creates some middlewares for supporting the GraphQL.
+> Options
+- path?: string <br /> A target path that handles the GraphQL post request (__*optional__: default as `/graphql`)
+- typeDefs: any <br /> generated type tags by the `gql`
+- resolvers: any <br /> An object that handles the queries and mutations
+```ts
+const resolvers = {
+  Query: {
+    getUser: (parent: any, {id}: any, context: any, info: any) => {
+      // ...query handling function here
+    },
+  },
+  Mutation: {
+    addUser: (parent: any, {firstName, lastName}: any, context: any, info: any) => {
+      // ...add user codes here
+    },
+  }
+}
+```
+> The resolvers are will receive four parameters
+> - parents: The return value of the resolver for this field's parent
+> - args: An object that contains all GraphQL arguments provided for this field.
+> - context: An object shared across all resolvers that are executing for a particular operation.
+> - info: Contains information about the operation's execution state, including the field name, the path to the field from the root, and more.
+- context: any <br /> Authentication token to send each resolver
+- middlewares?: CallBackType[]; <br /> `(req, res) => any` added before execute the GQL post request
+- usePlayground?: boolean; <br /> enable the playground at get method (__*optional__: default as `true`)
