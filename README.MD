@@ -10,10 +10,7 @@ import {
   logger,
   parser,
 } from "https://deno.land/x/attain/mod.ts";
-import {
-  gql
-} from "./deps.ts";
-import { applyGraphQL } from "./applyGraphQL.ts";
+import { applyGraphQL, gql } from "https://raw.githubusercontent.com/aaronwlee/Attain-GraphQL/master/mod.ts";
 
 const app = new App();
 
