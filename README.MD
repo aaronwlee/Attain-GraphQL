@@ -1,5 +1,5 @@
 # Attain-GraphQL
-A simple middleware for Attain deno framework.
+A simple graphql middleware for Attain deno framework.
 
 ## Simple example
 ```ts
