@@ -115,6 +115,6 @@ const resolvers = {
 > - args: An object that contains all GraphQL arguments provided for this field.
 > - context: An object shared across all resolvers that are executing for a particular operation.
 > - info: Contains information about the operation's execution state, including the field name, the path to the field from the root, and more.
-- context: any <br /> Authentication token to send each resolver
-- middlewares?: CallBackType[]; <br /> `(req, res) => any` added before execute the GQL post request
+- context?: any <br /> Send any objects to each resolver (__*optional__)
+- middlewares?: CallBackType[]; <br /> `(req, res) => any` added before execute the GQL post request (__*optional__)
 - usePlayground?: boolean; <br /> enable the playground at get method (__*optional__: default as `true`)
