@@ -12,7 +12,7 @@ export interface ApplyGraphQLOptions {
   path?: string;
   typeDefs: any;
   resolvers: ResolversProps;
-  context?: any;
+  context?: (req: Request) => any;
   middlewares?: CallBackType[];
   usePlayground?: boolean;
 }
@@ -32,7 +32,7 @@ export const applyGraphQL = ({
   usePlayground = true,
 }: ApplyGraphQLOptions): Router => {
   const graphqlMiddlewares = new Router();
-  const newMiddlewares = [...middlewares];
+  const newMiddlewares = middlewares;
 
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
@@ -43,7 +43,7 @@ export const applyGraphQL = ({
           schema,
           req.params.query ? req.params.query : (await req.body()).value.query,
           resolvers,
-          context(req),
+          context ? await context(req) : undefined,
         );
         if (result.data) {
           return res.status(200).send(result);
