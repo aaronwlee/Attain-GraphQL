@@ -37,13 +37,14 @@ export const applyGraphQL = ({
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
   newMiddlewares.push(async (req: Request, res: Response) => {
+    const contextResult = context ? context(req) : undefined;
     if (req.hasBody) {
       try {
         const result = await graphql(
           schema,
-          req.params.query ? req.params.query : (await req.body()).value.query,
+          (await req.body()).value.query,
           resolvers,
-          context ? await context(req) : undefined,
+          contextResult,
         );
         if (result.data) {
           return res.status(200).send(result);
