@@ -1,6 +1,8 @@
 # Attain-GraphQL
 A simple graphql middleware for Attain deno framework.
 
+![alt text](https://github.com/aaronwlee/Attain-GraphQL/master/playground.JPG "Logo Title Text 1")
+
 ## Simple example
 ```ts
 import {
@@ -10,7 +12,7 @@ import {
   logger,
   parser,
 } from "https://deno.land/x/attain/mod.ts";
-import { applyGraphQL, gql } from "https://raw.githubusercontent.com/aaronwlee/Attain-GraphQL/master/mod.ts";
+import { applyGraphQL, gql } from "https://deno.land/x/attain_graphql/mod.ts";
 
 const app = new App();
 
