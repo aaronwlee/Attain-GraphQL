@@ -1,7 +1,7 @@
 # Attain-GraphQL
 A simple graphql middleware for Attain deno framework.
 
-![alt text](https://github.com/aaronwlee/Attain-GraphQL/master/playground.JPG "Logo Title Text 1")
+![alt text](https://github.com/aaronwlee/Attain-GraphQL/blob/master/playground.JPG "Attain-GraphQL")
 
 ## Simple example
 ```ts
