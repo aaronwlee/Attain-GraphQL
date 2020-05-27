@@ -70,7 +70,7 @@ export const applyGraphQL = ({
 
       if (prefersHTML) {
         const playground = renderPlaygroundPage({
-          endpoint: req.url.origin,
+          endpoint: req.url.origin + path,
           subscriptionEndpoint: req.url.origin + path,
         });
         res.status(200).send(playground);
