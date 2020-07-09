@@ -1,20 +1,16 @@
 import {
   GraphQLEnumType,
-  GraphQLSchema,
   isSchema,
   GraphQLScalarType,
   GraphQLUnionType,
   GraphQLInterfaceType,
-  GraphQLFieldConfig,
   GraphQLObjectType,
   isSpecifiedScalarType,
-  GraphQLFieldResolver,
   isScalarType,
   isEnumType,
   isUnionType,
   isInterfaceType,
   isObjectType,
-  GraphQLField,
 } from "../../deps.ts";
 
 import {
@@ -34,10 +30,10 @@ import { checkForResolveTypeResolver } from './checkForResolveTypeResolver.ts';
 import { extendResolversFromInterfaces } from './extendResolversFromInterfaces.ts';
 
 export function addResolversToSchema(
-  schemaOrOptions: GraphQLSchema | IAddResolversToSchemaOptions,
+  schemaOrOptions: any | IAddResolversToSchemaOptions,
   legacyInputResolvers?: IResolvers,
   legacyInputValidationOptions?: IResolverValidationOptions
-): GraphQLSchema {
+): any {
   const options: any = isSchema(schemaOrOptions)
     ? {
         schema: schemaOrOptions,
@@ -128,11 +124,11 @@ function addResolversToExistingSchema({
   defaultFieldResolver,
   allowResolversNotInSchema,
 }: {
-  schema: GraphQLSchema;
+  schema: any;
   resolvers: IResolvers;
-  defaultFieldResolver: GraphQLFieldResolver<any, any>;
+  defaultFieldResolver: any;
   allowResolversNotInSchema: boolean;
-}): GraphQLSchema {
+}): any {
   const typeMap = schema.getTypeMap();
   Object.keys(resolvers).forEach(typeName => {
     if (typeName !== '__schema') {
@@ -164,7 +160,7 @@ function addResolversToExistingSchema({
           }
         });
 
-        typeMap[typeName] = new GraphQLEnumType(config);
+        typeMap[typeName] = new (GraphQLEnumType as any)(config);
       } else if (isUnionType(type)) {
         Object.keys(resolverValue).forEach(fieldName => {
           if (fieldName.startsWith('__')) {
@@ -237,13 +233,13 @@ function createNewSchemaWithResolvers({
   defaultFieldResolver,
   allowResolversNotInSchema,
 }: {
-  schema: GraphQLSchema;
+  schema: any;
   resolvers: IResolvers;
-  defaultFieldResolver: GraphQLFieldResolver<any, any>;
+  defaultFieldResolver: any;
   allowResolversNotInSchema: boolean;
-}): GraphQLSchema {
+}): any {
   schema = mapSchema(schema, {
-    [MapperKind.SCALAR_TYPE]: type => {
+    [MapperKind.SCALAR_TYPE]: (type: any) => {
       const config: any = type.toConfig();
       const resolverValue: any = resolvers[type.name];
       if (!isSpecifiedScalarType(type) && resolverValue != null) {
@@ -255,10 +251,10 @@ function createNewSchemaWithResolvers({
           }
         });
 
-        return new GraphQLScalarType(config);
+        return new (GraphQLScalarType as any)(config);
       }
     },
-    [MapperKind.ENUM_TYPE]: type => {
+    [MapperKind.ENUM_TYPE]: (type: any) => {
       const resolverValue: any = resolvers[type.name];
 
       const config: any = type.toConfig();
@@ -278,10 +274,10 @@ function createNewSchemaWithResolvers({
           }
         });
 
-        return new GraphQLEnumType(config);
+        return new (GraphQLEnumType as any)(config);
       }
     },
-    [MapperKind.UNION_TYPE]: type => {
+    [MapperKind.UNION_TYPE]: (type: any) => {
       const resolverValue: any = resolvers[type.name];
 
       if (resolverValue != null) {
@@ -301,10 +297,10 @@ function createNewSchemaWithResolvers({
           );
         });
 
-        return new GraphQLUnionType(config);
+        return new (GraphQLUnionType as any)(config);
       }
     },
-    [MapperKind.OBJECT_TYPE]: type => {
+    [MapperKind.OBJECT_TYPE]: (type: any) => {
       const resolverValue: any = resolvers[type.name];
       if (resolverValue != null) {
         const config: any = type.toConfig();
@@ -327,10 +323,10 @@ function createNewSchemaWithResolvers({
           }
         });
 
-        return new GraphQLObjectType(config);
+        return new (GraphQLObjectType as any)(config);
       }
     },
-    [MapperKind.INTERFACE_TYPE]: type => {
+    [MapperKind.INTERFACE_TYPE]: (type: any) => {
       const resolverValue: any = resolvers[type.name];
       if (resolverValue != null) {
         const config: any = type.toConfig();
@@ -353,7 +349,7 @@ function createNewSchemaWithResolvers({
           }
         });
 
-        return new GraphQLInterfaceType(config);
+        return new (GraphQLInterfaceType as any)(config);
       }
     },
     [MapperKind.COMPOSITE_FIELD]: (fieldConfig, fieldName, typeName) => {
@@ -391,7 +387,7 @@ function createNewSchemaWithResolvers({
 }
 
 function setFieldProperties(
-  field: GraphQLField<any, any> | GraphQLFieldConfig<any, any>,
+  field: any,
   propertiesObj: Record<string, any>
 ) {
   Object.keys(propertiesObj).forEach(propertyName => {

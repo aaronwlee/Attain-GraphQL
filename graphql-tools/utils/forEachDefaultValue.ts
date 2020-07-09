@@ -1,19 +1,19 @@
-import { getNamedType, GraphQLSchema, isObjectType, isInputObjectType } from "../../deps.ts";
+import { getNamedType, isObjectType, isInputObjectType } from "../../deps.ts";
 
 import { IDefaultValueIteratorFn } from './Interfaces.ts';
 
-export function forEachDefaultValue(schema: GraphQLSchema, fn: IDefaultValueIteratorFn): void {
+export function forEachDefaultValue(schema: any, fn: IDefaultValueIteratorFn): void {
   const typeMap = schema.getTypeMap();
   Object.keys(typeMap).forEach(typeName => {
     const type = typeMap[typeName];
 
-    if (!getNamedType(type).name.startsWith('__')) {
+    if (!(getNamedType(type) as any).name.startsWith('__')) {
       if (isObjectType(type)) {
         const fields = type.getFields();
         Object.keys(fields).forEach(fieldName => {
           const field = fields[fieldName];
 
-          field.args.forEach(arg => {
+          field.args.forEach((arg: any) => {
             arg.defaultValue = fn(arg.type, arg.defaultValue);
           });
         });

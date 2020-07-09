@@ -27,19 +27,16 @@
 //
 
 import {
-  GraphQLObjectType,
   GraphQLSchema,
-  GraphQLNamedType,
-  GraphQLDirective,
   isNamedType,
   isDirective,
 } from "../../deps.ts";
 import { rewireTypes } from './rewire.ts';
 
 export function addTypes(
-  schema: GraphQLSchema,
-  newTypesOrDirectives: Array<GraphQLNamedType | GraphQLDirective>
-): GraphQLSchema {
+  schema: any,
+  newTypesOrDirectives: Array<any | any>
+): any {
   const queryType = schema.getQueryType();
   const mutationType = schema.getMutationType();
   const subscriptionType = schema.getSubscriptionType();
@@ -51,12 +48,12 @@ export function addTypes(
   const config = schema.toConfig();
 
   const originalTypeMap: any = {};
-  config.types.forEach(type => {
+  config.types.forEach((type: any) => {
     originalTypeMap[type.name] = type;
   });
 
   const originalDirectiveMap: any = {};
-  config.directives.forEach(directive => {
+  config.directives.forEach((directive: any) => {
     originalDirectiveMap[directive.name] = directive;
   });
 
@@ -73,11 +70,11 @@ export function addTypes(
     Object.keys(originalDirectiveMap).map(directiveName => originalDirectiveMap[directiveName])
   );
 
-  return new GraphQLSchema({
+  return new (GraphQLSchema as any)({
     ...config,
-    query: queryTypeName ? (typeMap[queryTypeName] as GraphQLObjectType) : undefined,
-    mutation: mutationTypeName ? (typeMap[mutationTypeName] as GraphQLObjectType) : undefined,
-    subscription: subscriptionTypeName != null ? (typeMap[subscriptionTypeName] as GraphQLObjectType) : undefined,
+    query: queryTypeName ? (typeMap[queryTypeName] as any) : undefined,
+    mutation: mutationTypeName ? (typeMap[mutationTypeName] as any) : undefined,
+    subscription: subscriptionTypeName != null ? (typeMap[subscriptionTypeName] as any) : undefined,
     types: Object.keys(typeMap).map(typeName => typeMap[typeName]),
     directives,
   });

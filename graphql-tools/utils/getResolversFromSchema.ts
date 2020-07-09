@@ -1,5 +1,4 @@
 import {
-  GraphQLSchema,
   isScalarType,
   isEnumType,
   isInterfaceType,
@@ -12,7 +11,7 @@ import { IResolvers } from './Interfaces.ts';
 
 import { cloneType } from './clone.ts';
 
-export function getResolversFromSchema(schema: GraphQLSchema): IResolvers {
+export function getResolversFromSchema(schema: any): IResolvers {
   const resolvers = Object.create({});
 
   const typeMap = schema.getTypeMap();
@@ -28,7 +27,7 @@ export function getResolversFromSchema(schema: GraphQLSchema): IResolvers {
       resolvers[typeName] = {};
 
       const values = type.getValues();
-      values.forEach(value => {
+      values.forEach((value: any) => {
         resolvers[typeName][value.name] = value.value;
       });
     } else if (isInterfaceType(type)) {

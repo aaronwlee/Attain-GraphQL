@@ -37,28 +37,29 @@ export const applyGraphQL = ({
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
   newMiddlewares.push(async (req: Request, res: Response) => {
-    const contextResult = context ? context(req) : undefined;
     if (req.hasBody) {
       try {
+        const contextResult = context ? await context(req) : undefined;
+        const { query, variables, operationName } = (await req.body()).value;
         const result = await graphql(
           schema,
-          (await req.body()).value.query,
+          query,
           resolvers,
           contextResult,
+          variables || undefined,
+          operationName || undefined
         );
-        if (result.data) {
-          return res.status(200).send(result);
-        } else if (result.errors) {
-          const { errors } = result;
-          return res.status(400).send({ error: { errors } });
-        }
-        return res.status(400).send("gql Error");
+
+        res.status(200).send(result);
       } catch (error) {
-        return res.status(400).send({ error });
+        return res.status(200).send({
+          data: null,
+          errors: [{
+            message: error.message ? error.message : error
+          }]
+        });
       }
     }
-  
-    res.status(400).send("body required");
   })
 
   graphqlMiddlewares.get(path, async (req: Request, res: Response) => {
