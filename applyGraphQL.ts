@@ -23,6 +23,12 @@ export interface ResolversProps {
   [dynamicProperty: string]: any;
 }
 
+interface DynamicVersionRouter {
+  middlewares: any[];
+  errorMiddlewares: any[];
+  paramHandlerStacks: any[];
+}
+
 export const applyGraphQL = ({
   path = "/graphql",
   typeDefs,
@@ -30,8 +36,8 @@ export const applyGraphQL = ({
   context,
   middlewares = [],
   usePlayground = true,
-}: ApplyGraphQLOptions): Router => {
-  const graphqlMiddlewares = new Router();
+}: ApplyGraphQLOptions): DynamicVersionRouter => {
+  const graphqlMiddlewares: any = new Router();
   const newMiddlewares = middlewares;
 
   const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -82,7 +88,7 @@ export const applyGraphQL = ({
 
   graphqlMiddlewares.post(path, ...newMiddlewares)
 
-  return graphqlMiddlewares;
+  return graphqlMiddlewares as DynamicVersionRouter;
 };
 
 
