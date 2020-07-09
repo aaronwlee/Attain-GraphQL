@@ -1,19 +1,17 @@
 import {
   Router,
-  Request,
-  Response,
 } from "https://deno.land/x/attain/mod.ts";
 import { graphql } from "./deps.ts";
 import { renderPlaygroundPage } from "./graphql-playground-html/render-playground-html.ts";
 import { makeExecutableSchema } from "./graphql-tools/schema/makeExecutableSchema.ts";
-import { CallBackType } from "https://deno.land/x/attain/types.ts";
 
 export interface ApplyGraphQLOptions {
   path?: string;
   typeDefs: any;
+  TRouter?: any;
   resolvers: ResolversProps;
-  context?: (req: Request) => any;
-  middlewares?: CallBackType[];
+  context?: (req: any) => any;
+  middlewares?: any[];
   usePlayground?: boolean;
 }
 
@@ -23,50 +21,26 @@ export interface ResolversProps {
   [dynamicProperty: string]: any;
 }
 
-interface DRouter {
-  middlewares: DMiddlewareProps[];
-  errorMiddlewares: DErrorMiddlewareProps[];
-  paramHandlerStacks: DParamStackProps[];
-}
-
-interface DMiddlewareProps {
-  url?: string;
-  paramHandlers?: any;
-  callBack?: any;
-  method?: any;
-  next?: DMiddlewareProps[];
-}
-
-interface DParamStackProps {
-  paramName: string;
-  callBack: any;
-}
-
-interface DErrorMiddlewareProps {
-  url?: string;
-  callBack?: any;
-  next?: DErrorMiddlewareProps[];
-}
-
-export const applyGraphQL = <T extends DRouter = any>({
+export const applyGraphQL = ({
   path = "/graphql",
+  TRouter = Router,
   typeDefs,
   resolvers,
   context,
   middlewares = [],
   usePlayground = true,
-}: ApplyGraphQLOptions): T => {
-  const graphqlMiddlewares: any = new Router();
+}: ApplyGraphQLOptions) => {
+  const graphqlMiddlewares: any = new TRouter();
   const newMiddlewares = middlewares;
 
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-  newMiddlewares.push(async (req: Request, res: Response) => {
+  newMiddlewares.push(async (req: any, res: any) => {
     if (req.hasBody) {
       try {
         const contextResult = context ? await context(req) : undefined;
         const { query, variables, operationName } = (await req.body()).value;
-        const result = await graphql(
+        const result = await (graphql as any)(
           schema,
           query,
           resolvers,
@@ -87,7 +61,7 @@ export const applyGraphQL = <T extends DRouter = any>({
     }
   })
 
-  graphqlMiddlewares.get(path, async (req: Request, res: Response) => {
+  graphqlMiddlewares.get(path, async (req: any, res: any) => {
     if (usePlayground) {
       // perform more expensive content-type check only if necessary
       // XXX We could potentially move this logic into the GuiOptions lambda,
@@ -107,7 +81,7 @@ export const applyGraphQL = <T extends DRouter = any>({
 
   graphqlMiddlewares.post(path, ...newMiddlewares)
 
-  return (graphqlMiddlewares as T);
+  return graphqlMiddlewares as typeof TRouter;
 };
 
 
