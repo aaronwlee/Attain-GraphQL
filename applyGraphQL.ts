@@ -23,7 +23,32 @@ export interface ResolversProps {
   [dynamicProperty: string]: any;
 }
 
-export const applyGraphQL = <T>({
+interface DRouter {
+  middlewares: DMiddlewareProps[];
+  errorMiddlewares: DErrorMiddlewareProps[];
+  paramHandlerStacks: DParamStackProps[];
+}
+
+interface DMiddlewareProps {
+  url?: string;
+  paramHandlers?: any;
+  callBack?: any;
+  method?: any;
+  next?: DMiddlewareProps[];
+}
+
+interface DParamStackProps {
+  paramName: string;
+  callBack: any;
+}
+
+interface DErrorMiddlewareProps {
+  url?: string;
+  callBack?: any;
+  next?: DErrorMiddlewareProps[];
+}
+
+export const applyGraphQL = <T extends DRouter = any>({
   path = "/graphql",
   typeDefs,
   resolvers,
@@ -82,7 +107,7 @@ export const applyGraphQL = <T>({
 
   graphqlMiddlewares.post(path, ...newMiddlewares)
 
-  return graphqlMiddlewares as T;
+  return (graphqlMiddlewares as T);
 };
 
 
